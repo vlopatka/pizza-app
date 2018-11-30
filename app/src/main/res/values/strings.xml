@@ -18,9 +18,19 @@
     <string name="rb_big">Big(10.00)</string>
     <string name="tv_1_3">1 / 3</string>
     <string name="tv_toppings">3. Choose the toppings:</string>
-    <string-array name="sauces">
-        <item>Tomato (2.50)</item>
-        <item>BBQ (3.50)</item>
-        <item>Crème Fraîche (1.50)</item>
+    <string name="topping_name">Topping name</string>
+    <string name="name_price">Price...</string>
+    <string-array name="saucesText">
+        <item>Tomato</item>
+        <item>BBQ</item>
+        <item>Crème Fraîche</item>
     </string-array>
+    <string-array name="saucesPrice">
+        <item>2.50</item>
+        <item>3.50</item>
+        <item>1.50</item>
+    </string-array>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="txt_finish">FINISH</string>
+    <string name="header_toppings">Toppings:</string>
 </resources>

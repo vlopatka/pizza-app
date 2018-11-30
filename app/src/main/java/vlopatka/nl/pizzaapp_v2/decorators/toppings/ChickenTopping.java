@@ -1,6 +1,6 @@
 package vlopatka.nl.pizzaapp_v2.decorators.toppings;
 
-import vlopatka.nl.pizzaapp_v2.Constants;
+import vlopatka.nl.pizzaapp_v2.utils.Constants;
 import vlopatka.nl.pizzaapp_v2.decorators.IPizza;
 import vlopatka.nl.pizzaapp_v2.decorators.Topping;
 

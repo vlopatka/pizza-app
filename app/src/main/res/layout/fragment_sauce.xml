@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/bottom_panel">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical">
+        <LinearLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
@@ -28,19 +30,19 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="10dp"
-                    tools:context=".MainActivity">
+                    tools:context=".activities.MainActivity">
 
                 <GridView
-                        android:id="@+id/gv"
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/sauceGrid"
                         android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:padding="2dp"
-                        android:numColumns="1"
-                        android:verticalSpacing="2dp"
-                        android:horizontalSpacing="2dp"
+                        android:layout_height="match_parent"
+                        android:columnWidth="100dp"
+                        android:numColumns="auto_fit"
+                        android:verticalSpacing="10dp"
+                        android:horizontalSpacing="10dp"
                         android:stretchMode="columnWidth"
-                        android:gravity="left">
-                </GridView>
+                        android:gravity="center"/>
             </RelativeLayout>
 
         </LinearLayout>

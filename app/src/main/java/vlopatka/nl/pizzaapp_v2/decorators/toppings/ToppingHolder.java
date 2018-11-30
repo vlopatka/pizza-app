@@ -11,8 +11,8 @@ import vlopatka.nl.pizzaapp_v2.R;
 public class ToppingHolder extends RecyclerView.ViewHolder implements OnClickListener{
 
     public ImageView img;
-    public TextView nameTxt,posTxt;
-    public CheckBox myCheckBox;
+    public TextView nameTxt, posTxt;
+    public CheckBox checkBox;
     public ItemClickListener itemClickListener;
 
     public ToppingHolder(View itemView) {
@@ -21,20 +21,21 @@ public class ToppingHolder extends RecyclerView.ViewHolder implements OnClickLis
         nameTxt= itemView.findViewById(R.id.nameView);
         posTxt= itemView.findViewById(R.id.descriptionTextView);
         img= itemView.findViewById(R.id.imageView);
-        myCheckBox= itemView.findViewById(R.id.myCheckBox);
+        checkBox= itemView.findViewById(R.id.checkBox);
 
-        myCheckBox.setOnClickListener(this);
+        checkBox.setOnClickListener(this);
     }
     public void setItemClickListener(ItemClickListener ic)
     {
         this.itemClickListener=ic;
     }
+
     @Override
     public void onClick(View v) {
-        this.itemClickListener.onItemClick(v,getLayoutPosition());
+        this.itemClickListener.onItemClick(v, getLayoutPosition());
     }
-    interface ItemClickListener {
 
+    public interface ItemClickListener {
         void onItemClick(View v,int pos);
     }
 }

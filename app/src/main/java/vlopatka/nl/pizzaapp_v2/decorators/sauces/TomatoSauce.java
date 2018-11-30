@@ -1,6 +1,6 @@
 package vlopatka.nl.pizzaapp_v2.decorators.sauces;
 
-import vlopatka.nl.pizzaapp_v2.Constants;
+import vlopatka.nl.pizzaapp_v2.utils.Constants;
 import vlopatka.nl.pizzaapp_v2.decorators.IPizza;
 import vlopatka.nl.pizzaapp_v2.decorators.Sauce;
 
@@ -12,6 +12,6 @@ public class TomatoSauce extends Sauce {
 
     @Override
     public double getPrice() {
-        return IPizza.getPrice() + Constants.TOMATO_SOUSE_PRICE;
+        return IPizza.getPrice() + Constants.TOMATO_SAUCE_PRICE;
     }
 }

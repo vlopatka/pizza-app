@@ -1,26 +1,24 @@
 package vlopatka.nl.pizzaapp_v2.fragments;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.widget.RelativeLayout.LayoutParams;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import vlopatka.nl.pizzaapp_v2.Constants;
-import vlopatka.nl.pizzaapp_v2.PizzaService;
+import vlopatka.nl.pizzaapp_v2.services.ProgressBarService;
+import vlopatka.nl.pizzaapp_v2.utils.Constants;
+import vlopatka.nl.pizzaapp_v2.services.PizzaService;
 import vlopatka.nl.pizzaapp_v2.R;
 import vlopatka.nl.pizzaapp_v2.decorators.Pizza;
 import vlopatka.nl.pizzaapp_v2.decorators.sauces.BBQSauce;
-import vlopatka.nl.pizzaapp_v2.decorators.sauces.CrèmeFraîcheSauce;
+import vlopatka.nl.pizzaapp_v2.decorators.sauces.CremeFraicheSauce;
+import vlopatka.nl.pizzaapp_v2.adapters.SauceAdapter;
 import vlopatka.nl.pizzaapp_v2.decorators.sauces.TomatoSauce;
 
 import java.util.ArrayList;
@@ -29,91 +27,80 @@ import java.util.List;
 
 public class SauceFragment extends Fragment {
 
-    private PizzaService service;
+    private GridView grid;
     private Pizza pizza;
-    private double saucePrice;
+    private PizzaService service;
+    private ProgressBarService progressBarService;
     private SizeFragment sizeFragment;
     private ToppingFragment toppingFragment;
-    private String selectedItem;
     private FragmentManager manager;
     private FragmentTransaction transaction;
+    private static double saucePrice;
+    public static int previousSelectedPosition = -1;
     public static final String TAG = "SauceFragment";
-    private int previousSelectedPosition = -1;
+    private int[] image = {R.drawable.tomato, R.drawable.bbq, R.drawable.cf};
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sauce, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        @SuppressLint("InflateParams") View view = inflater.inflate(R.layout.fragment_sauce, null);
+
+        pizza = PizzaService.pizza;
         sizeFragment = new SizeFragment();
         toppingFragment = new ToppingFragment();
         saucePrice = Constants.SAUCE_START_PRICE;
+        progressBarService = new ProgressBarService();
         service = new PizzaService();
         manager = getFragmentManager();
-        pizza = PizzaService.pizza;
+        final List<String> saucesText = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.saucesText)));
+        final List<String> saucesPrice = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.saucesPrice)));
+
         Button btnBack = view.findViewById(R.id.btn_back);
         Button btnNext = view.findViewById(R.id.btn_next);
-        final GridView gv = (GridView) view.findViewById(R.id.gv);
-        final List<String> saucesList = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.sauces)));
 
-        gv.setAdapter(new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, saucesList){
-            public View getView(int position, View convertView, ViewGroup parent) {
+        assert container != null;
+        grid = view.findViewById(R.id.sauceGrid);
+        grid.setAdapter(new SauceAdapter(getContext(), image, saucesText, saucesPrice));
 
-                View view = super.getView(position, convertView, parent);
-                TextView tv = (TextView) view;
+        ProgressFragment.part.setText("2 / 3");
+        progressBarService.start(TAG);
 
-                tv.setTextColor(Color.WHITE);
-                RelativeLayout.LayoutParams lp =  new RelativeLayout.LayoutParams(
-                        LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT
-                );
-                tv.setLayoutParams(lp);
-
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)tv.getLayoutParams();
-                tv.setLayoutParams(params);
-                tv.setGravity(Gravity.CENTER);
-                tv.setTypeface(Typeface.SANS_SERIF, Typeface.NORMAL);
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-
-                tv.setText(saucesList.get(position));
-
-                tv.setBackgroundColor(Color.parseColor("#27AE60"));
-                return tv;
-            }
-        });
-
-        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Listener for grid item
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedItem = parent.getItemAtPosition(position).toString();
+                view.setBackgroundColor(Color.parseColor("#A3E4D7"));
+                pizza.setCurrentSaucePosition(position);
                 switch (position) {
                     case 0:
                         TomatoSauce tomatoSauce = new TomatoSauce(pizza);
                         service.reducePrice(saucePrice);
-                        saucePrice = Constants.TOMATO_SOUSE_PRICE;
+                        saucePrice = Constants.TOMATO_SAUCE_PRICE;
+                        pizza.setSauce(Constants.PIZZA_SAUCE_TOMATO);
                         service.setAmount(tomatoSauce.getPrice());
                         break;
                     case 1:
                         BBQSauce bbqSauce = new BBQSauce(pizza);
                         service.reducePrice(saucePrice);
-                        saucePrice = Constants.BBQ_SOUSE_PRICE;
+                        saucePrice = Constants.BBQ_SAUCE_PRICE;
+                        pizza.setSauce(Constants.PIZZA_SAUCE_BBQ);
                         service.setAmount(bbqSauce.getPrice());
                         break;
                     case 2:
-                        CrèmeFraîcheSauce crèmeFraîcheSauce = new CrèmeFraîcheSauce(pizza);
+                        CremeFraicheSauce cremeFraicheSauce = new CremeFraicheSauce(pizza);
                         service.reducePrice(saucePrice);
-                        saucePrice = Constants.CREME_FRAISE_SOUSE_PRICE;
-                        service.setAmount(crèmeFraîcheSauce.getPrice());
+                        saucePrice = Constants.CREME_FRAICHE_SAUCE_PRICE;
+                        pizza.setSauce(Constants.PIZZA_SAUCE_CREME_FRAICHE);
+                        service.setAmount(cremeFraicheSauce.getPrice());
                         break;
                 }
-                TextView tv = (TextView) view;
-                tv.setBackgroundColor(Color.parseColor("#BDC3C7"));
-                tv.setTextColor(Color.parseColor("#27AE60"));
-                TextView previousSelectedView = (TextView) gv.getChildAt(previousSelectedPosition);
 
+                View previousSelectedView = grid.getChildAt(previousSelectedPosition);
                 if (previousSelectedPosition != -1) {
                     previousSelectedView.setSelected(false);
-                    previousSelectedView.setBackgroundColor(Color.parseColor("#27AE60"));
-                    previousSelectedView.setTextColor(Color.WHITE);
+                    previousSelectedView.setBackgroundColor(Color.parseColor("#F9E3C0"));
                 }
+                pizza.setCurrentSaucePosition(position);
                 previousSelectedPosition = position;
             }
         });
@@ -126,7 +113,8 @@ public class SauceFragment extends Fragment {
                 if (manager.findFragmentByTag(SauceFragment.TAG) != null) {
                     transaction.replace(R.id.container, sizeFragment, SizeFragment.TAG);
                     service.reducePrice(saucePrice);
-                    ProgressFragment.part.setText("2 / 2");
+                    pizza.setCurrentSaucePosition(-1);
+                    ProgressFragment.part.setText("1 / 3");
                 }
                 transaction.commit();
             }
@@ -136,12 +124,11 @@ public class SauceFragment extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectedItem != null) {
+                if (pizza.getCurrentSaucePosition() != -1) {
                     transaction = manager.beginTransaction();
                     if (manager.findFragmentByTag(SauceFragment.TAG) != null) {
                         transaction.replace(R.id.container, toppingFragment, ToppingFragment.TAG);
                         ProgressFragment.part.setText("3 / 3");
-
                     }
                     transaction.commit();
                 } else {
@@ -153,4 +140,9 @@ public class SauceFragment extends Fragment {
         return view;
     }
 
+    public static void setSaucePrice(int pos) {
+        if (pos == 0) saucePrice = Constants.TOMATO_SAUCE_PRICE;
+        if (pos == 1) saucePrice = Constants.BBQ_SAUCE_PRICE;
+        if (pos == 2) saucePrice = Constants.CREME_FRAICHE_SAUCE_PRICE;
+    }
 }

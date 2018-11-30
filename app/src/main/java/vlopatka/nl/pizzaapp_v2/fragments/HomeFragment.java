@@ -13,7 +13,6 @@ public class HomeFragment extends Fragment {
 
     public static final String TAG = "HomeFragment";
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, null);
